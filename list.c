@@ -29,26 +29,53 @@ Node * createNode(void * data) {
 }
 
 List * createList() {
-     return NULL;
+    List *newList = (List *) malloc (sizeof(List));
+    newList->current = NULL;
+    newList->head = NULL;
+    newList->tail = NULL;
+
+    return newList;
 }
 
 void * firstList(List * list) {
-    return NULL;
+    if (list->head == NULL) return NULL;
+    list->current = list->head;
+    return list->current->data;
 }
 
 void * nextList(List * list) {
-    return NULL;
+    if (list->current == NULL) return NULL;
+    if (list->current->next == NULL) return NULL;
+    list->current = list->current->next;
+    return list->current->data;
 }
 
 void * lastList(List * list) {
-    return NULL;
+    if (list->tail == NULL) return NULL;
+    list->current = list->tail;
+    return list->tail->data;
 }
 
 void * prevList(List * list) {
-    return NULL;
+    if (list->current == NULL) return NULL;
+    if (list->current->prev == NULL) return NULL;
+    list->current = list->current->prev;
+    return list->current->data;
 }
 
 void pushFront(List * list, void * data) {
+    Node *newNode = createNode(data);
+    
+    if (list->head == NULL) {
+        list->head = newNode;
+        list->current = list->head;
+        list->tail = list->head;
+    }
+    else {
+        newNode->next = list->head;
+        list->head = newNode;
+        list->current = list->head;
+    }
 }
 
 void pushBack(List * list, void * data) {
@@ -57,6 +84,18 @@ void pushBack(List * list, void * data) {
 }
 
 void pushCurrent(List * list, void * data) {
+    Node *newNode = createNode(data);
+
+    if (list->current == list->tail) {
+        newNode->prev = list->current;
+        list->current->next = newNode;
+        list->tail = newNode;
+    }
+    else {
+        newNode->prev = list->current;
+        newNode->next = list->current->next;
+        list->current->next = newNode;
+    }
 }
 
 void * popFront(List * list) {
@@ -70,7 +109,23 @@ void * popBack(List * list) {
 }
 
 void * popCurrent(List * list) {
-    return NULL;
+    Node *eliminateNode = list->current;
+
+    if (list->current == list->head) {
+        list->current->next->prev = NULL;
+        list->head = list->current->next;
+    }
+    else {
+        if (list->current == list->tail) {
+            list->current->prev->next = NULL;
+            list->tail = list->current ->prev;
+        }
+        else {
+            list->current->prev->next = list->current->next;
+            list->current->next->prev = list->current->prev;
+        }
+    }
+    return eliminateNode->data;
 }
 
 void cleanList(List * list) {
