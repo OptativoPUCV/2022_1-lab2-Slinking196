@@ -125,6 +125,8 @@ void * popCurrent(List * list) {
             list->current->next->prev = list->current->prev;
         }
     }
+    free(list->current);
+    
     return eliminateNode->data;
 }
 
